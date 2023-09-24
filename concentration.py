@@ -21,14 +21,16 @@ def concentration():
         for n in range(26):
             while((u < 0 or u > 52) or cards[u-1] == ' '):
                 print('FIRST CARD?', end=' ')
-                u = int(input())
+                uu = input()
+                u = int(uu)
                 if u < 0 or u > 52:
                     print(f'THERE ARE ONLY 52 CARDS IN THE DECK, NOT {u}')
                 elif cards[u-1] == ' ':
                     print('YOU HAVE ALREADY MATCHED THAT CARD.')
             while((w < 0 or w > 52) or u==w or cards[w-1] == ' '):
                 print('SECOND CARD?', end=' ')
-                w = int(input())
+                ww = input()
+                w = int(ww)
                 if w < 0 or w > 52:
                     print(f'THERE ARE ONLY 52 CARDS IN THE DECK, NOT {w}')
                 elif u == w:

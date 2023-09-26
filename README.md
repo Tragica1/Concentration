@@ -1,4 +1,4 @@
-## Concentration
+# Concentration
 
 ## Build
 
@@ -10,6 +10,6 @@
 
 `make linux`
 
-#### web
+#### for web
 
 `make web`

@@ -13,3 +13,7 @@
 #### for web
 
 `make web`
+
+#### to delete trash
+
+`make clean`

@@ -1,10 +1,48 @@
 import random
 
+def is_web():
+    return "__BRYTHON__" in globals()
 
-def concentration():
-    print('\t\t\t CONCENTRATION')
-    print('\t       CREATIVE COMPUTING  MORRISTOWN NEW JERSEY')
-    print('\n\n\n')
+def write(message, end='\n'):
+    if is_web():
+        from browser import document
+        console = document.getElementById('console')
+        p = document.createElement('p')
+        p.textContent = '> ' + message
+        console.appendChild(p)
+        console.scrollTop = console.scrollHeight
+    else:
+        print(message, end=end)
+
+
+async def read():
+    if is_web():
+        from browser import document, aio
+        inp = document.getElementById('input')
+        while True:
+            event = await aio.event(inp, 'keydown')
+            if event.key == 'Enter':
+                tmp = event.target.value
+                event.target.value = ''
+                write(tmp)
+                return tmp
+    else:
+        return input()
+
+
+def run(function):
+    if is_web():
+        from browser import aio
+        aio.run(function())
+    else:
+        import asyncio
+        asyncio.run(function())
+
+
+async def concentration():
+    write('\t\t\t CONCENTRATION')
+    write('\t       CREATIVE COMPUTING  MORRISTOWN NEW JERSEY')
+    write('\n\n\n')
     z = 'YES'
 
     while z == 'YES':
@@ -20,64 +58,52 @@ def concentration():
 
         for n in range(26):
             while((u < 0 or u > 52) or cards[u-1] == ' '):
-                print('FIRST CARD?', end=' ')
-                uu = input()
-                u = int(uu)
+                write('FIRST CARD?', end=' ')
+                u = int(await read())
                 if u < 0 or u > 52:
-                    print(f'THERE ARE ONLY 52 CARDS IN THE DECK, NOT {u}')
+                    write(f'THERE ARE ONLY 52 CARDS IN THE DECK, NOT {u}')
                 elif cards[u-1] == ' ':
-                    print('YOU HAVE ALREADY MATCHED THAT CARD.')
+                    write('YOU HAVE ALREADY MATCHED THAT CARD.')
             while((w < 0 or w > 52) or u==w or cards[w-1] == ' '):
-                print('SECOND CARD?', end=' ')
-                ww = input()
-                w = int(ww)
+                write('SECOND CARD?', end=' ')
+                w = int(await read())
                 if w < 0 or w > 52:
-                    print(f'THERE ARE ONLY 52 CARDS IN THE DECK, NOT {w}')
+                    write(f'THERE ARE ONLY 52 CARDS IN THE DECK, NOT {w}')
                 elif u == w:
-                    print("YOU CAN'T PICK THE SAME CARD TWICE!")
+                    write("YOU CAN'T PICK THE SAME CARD TWICE!")
                 elif cards[w-1] == ' ':
-                    print('YOU HAVE ALREADY MATCHED THAT CARD.')
+                    write('YOU HAVE ALREADY MATCHED THAT CARD.')
             if (cards[u-1][0] == cards[w-1][0]):
-                print(f"THAT'S A MATCH --{cards[u-1]}\t {cards[w-1]}")
+                write(f"THAT'S A MATCH --{cards[u-1]}\t {cards[w-1]}")
                 cards[u-1] = ' '
                 cards[w-1] = ' '
                 score += 1
-                print(f"YOUR SCORE IS NOW {score}  YOU HAVE HAD  {n+1} PICKS.")
+                write(f"YOUR SCORE IS NOW {score}  YOU HAVE HAD  {n+1} PICKS.")
             else:
-                print(f"# {u} IS {cards[u-1]}        # {w} IS {cards[w-1]}")
-                print('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
-                print('\n')
+                write(f"# {u} IS {cards[u-1]}        # {w} IS {cards[w-1]}")
+                write('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+                write('\n')
                 u = -1
                 w = -1
 
         s1 = score/((n+1)/4)
-        print(f"YOU SCORED {score} OUT OF {n+1}. THAT IS ", end="")
+        write(f"YOU SCORED {score} OUT OF {n+1}. THAT IS ", end="")
         if s1 <= 2:
-            print("POOR.")
+            write("POOR.")
         elif s1 <= 3:
-            print("FAIR.")
+            write("FAIR.")
         elif s1 <= 4:
-            print("GOOD.")
+            write("GOOD.")
         elif s1 <= 5:
-            print("EXCELLENT ! ! !")
+            write("EXCELLENT ! ! !")
         else:
-            print(". . . AAAH . . . UH....YOU MUST HAVE CHEATED!")
+            write(". . . AAAH . . . UH....YOU MUST HAVE CHEATED!")
 
-        print('DO YOU WANT TO PLAY AGAIN? ', end='')
-        z = input()
+        write('DO YOU WANT TO PLAY AGAIN? ', end='')
+        z = await read()
         if z != "YES":
-            print('\nCOME BACK AGAIN!!')
+            write('\nCOME BACK AGAIN!!')
             break
             
-if __name__ == '__main__':
-    concentration()
 
-
-'''
-pip install pyinstaller 
-
-# Затем перейти в папку с Вашим файлом .py в командной строке (при помощи команды cd) 
-# Запустить команду pyinstaller не забудьте указать имя вашего скрипта 
-
-pyinstaller --onefile <your_script_name>.py 
-'''
+run(concentration)

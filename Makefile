@@ -18,8 +18,7 @@ linux:
 	./$(LIN)/concentration.exe
 
 web:
-	
-	start http://localhost:8000/concentration.html
+	cmd /c start http://localhost:8000/concentration.html
 	python -m http.server 8000
 
 clean:
